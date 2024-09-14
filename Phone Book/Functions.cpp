@@ -1,6 +1,6 @@
 ﻿#include <iostream>
-#include <windows.h>
 #include "PhoneBook.h"
+#include <windows.h>
 #pragma warning(disable : 4996)
 using namespace std;
 
@@ -31,9 +31,12 @@ void WriteContactToFile(const Contact* list, int& size)
 		for (int i = 0; i < size; i++)
 		{
 			fprintf(file, "%s ", list[i].GetName());
-			//fprintf(file, " %s ", list[i].surname);
-			//fprintf(file, " %s ", list[i].second_name);
-			//fprintf(file, " %d ", list[i].home_);
+			fprintf(file, " %s ", list[i].GetSurname());
+			fprintf(file, " %s ", list[i].GetSecSurname());
+			fprintf(file, " %d ", list[i].GetHomePh());
+			fprintf(file, " %d ", list[i].GetWorkPh());
+			fprintf(file, " %d ", list[i].GetMobilePh());
+			fprintf(file, "%s ", list[i].GetAddInfo());
 			fputc('\n\n', file);
 		}
 		fclose(file);
@@ -64,14 +67,85 @@ void ViewContactsFromFile()
 		cout << "Error: Unable to open file for reading." << endl;
 	}
 }
+
+//добавление контакта
+void AddContact(Contact* list, int& size, char filename[])
+{
+	size += 1;
+	list[size - 1] = Contact();
+	list[size - 1].Input();
+	ClearFileContents(filename);
+	WriteContactToFile(list, size);
+}
+
+//удаление контакта
+void DeleteContact(Contact* list, int& length, char filename[])
+{
+	int temp = -1;
+
+	char* name = new char[20];
+	cout << "Enter name : ";
+	cin >> name;
+	int size = strlen(name);
+	char* Name = new char[size + 1];
+	strcpy_s(Name, size + 1, name);
+
+	char* surname = new char[20];
+	cout << "Enter surname : ";
+	cin >> surname;
+	size = strlen(surname);
+	char* Surname = new char[size + 1];
+	strcpy_s(Surname, size + 1, surname);
+
+	char* s_surname = new char[20];
+	cout << "Enter second surname : ";
+	cin >> s_surname;
+	size = strlen(s_surname);
+	char* S_Surname = new char[size + 1];
+	strcpy_s(S_Surname, size + 1, s_surname);
+
+	delete[] name;
+	delete[] surname;
+	delete[] s_surname;
+
+	for (int i = 0; i < length; i++)
+	{
+		if (strcmp(list[i].GetName(), Name) == 0 && strcmp(list[i].GetSurname(), Surname) == 0 && strcmp(list[i].GetSecSurname(), S_Surname) == 0)
+		{
+			temp = i;
+			break;
+		}
+	}
+
+	delete[] Name;
+	delete[] Surname;
+	delete[] S_Surname;
+
+	if (temp != -1)
+	{
+		for (int i = temp; i < length - 1; i++)
+		{
+			list[i] = list[i].CopyDelete(list[i+1]);
+		}
+		length--;
+	}
+	else
+	{
+		cout << "Contact not found." << endl;
+	}
+
+	ClearFileContents(filename);
+	WriteContactToFile(list, length);
+}
+
 //ф-ия которая вызывает другие ф-ии согласно выбору в меню пользователя
 void PerformAction(int option, Contact* list, int& size, char filename[])
 {
 	if (option == 1) ViewContactsFromFile();
-	//else if (option == 2) SearchByName(list, size);
-	//else if (option == 3) AddContact(list, size, filename);
-	//else if (option == 4) DeleteContact(list, size, filename);
-	else if (option == 0) exit(0);
+	else if (option == 2) SearchByName(list, size);
+	else if (option == 3) AddContact(list, size, filename);
+	else if (option == 4) DeleteContact(list, size, filename);
+	else if (option == 0) { exit(0); }
 
 	char temp;
 	cout << endl << "Enter smth to continue...";

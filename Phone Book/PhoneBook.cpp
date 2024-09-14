@@ -13,32 +13,69 @@ Contact::Contact()
 	mobile_phone = 0;
 	additional_info = nullptr;
 }
-Contact::Contact(const char* Name, const char* Surname, const char* S_Surname, int h_phone, int w_phone, int m_phone, const char* a_info)
+Contact& Contact::CopyDelete(const Contact& other)
 {
-	name = new char[strlen(Name) + 1];
-	strcpy_s(name, strlen(Name) + 1, Name);
 
-	surname = new char[strlen(Surname) + 1];
-	strcpy_s(surname, strlen(Surname) + 1, Surname);
+	// Очищення поточних даних
+	delete[] name;
+	delete[] surname;
+	delete[] second_surname;
+	delete[] additional_info;
+
+	if (other.name != nullptr)
+	{
+		name = new char[strlen(other.name) + 1];
+		strcpy_s(name, strlen(other.name) + 1, other.name);
+	}
+	else
+	{
+		name = nullptr;
+	}
+
+	if (other.surname != nullptr)
+	{
+		surname = new char[strlen(other.surname) + 1];
+		strcpy_s(surname, strlen(other.surname) + 1, other.surname);
+	}
+	else
+	{
+		surname = nullptr;
+	}
+
+	if (other.second_surname != nullptr)
+	{
+		second_surname = new char[strlen(other.second_surname) + 1];
+		strcpy_s(second_surname, strlen(other.second_surname) + 1, other.second_surname);
+	}
+	else
+	{
+		second_surname = nullptr;
+	}
 	
-	second_surname = new char[strlen(S_Surname) + 1];
-	strcpy_s(second_surname, strlen(S_Surname) + 1, S_Surname);
+	home_phone = other.home_phone;
+	work_phone = other.work_phone;
+	mobile_phone = other.mobile_phone;
 
-	home_phone = h_phone;
-	work_phone = w_phone;
-	mobile_phone = m_phone;
+	if (other.additional_info != nullptr)
+	{
+		additional_info = new char[strlen(other.additional_info) + 1];
+		strcpy_s(additional_info, strlen(other.additional_info) + 1, other.additional_info);
+	}
+	else
+	{
+		additional_info = nullptr;
+	}
 
-	additional_info = new char[strlen(a_info) + 1];
-	strcpy_s(additional_info, strlen(a_info) + 1, a_info);
+	return *this;
 }
 
-char* Contact::GetName() { return name; }
-char* Contact::GetSurname() { return surname; }
-char* Contact::GetSecSurname() { return second_surname; }
-int Contact::GetHomePh() { return home_phone; }
-int Contact::GetWorkPh() { return work_phone; }
-int Contact::GetMobilePh() { return mobile_phone; }
-char* Contact::GetAddInfo() {return additional_info;}
+char* Contact::GetName() const { return name; }
+char* Contact::GetSurname() const { return surname; }
+char* Contact::GetSecSurname() const { return second_surname; }
+int Contact::GetHomePh() const { return home_phone; }
+int Contact::GetWorkPh() const { return work_phone; }
+int Contact::GetMobilePh() const { return mobile_phone; }
+char* Contact::GetAddInfo() const {return additional_info;}
 
 void Contact::Print()
 {
@@ -50,7 +87,7 @@ void Contact::Print()
 }
 void Contact::Input()
 {
-	char buff[20];
+	char buff[100];
 	cout << "Enter name -> ";
 	cin >> buff;
 	if (name != nullptr) delete[] name;

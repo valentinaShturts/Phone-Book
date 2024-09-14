@@ -1,7 +1,10 @@
 ﻿#include <iostream>
 #include "PhoneBook.h"
-
+#include <windows.h>
+#pragma warning(disable : 4996)
 using namespace std;
+
+
 int main()
 {
 	int option = 0; //переменная выбора пользователя
@@ -19,8 +22,6 @@ int main()
 		PerformAction(option, phonebook, size, list);
 	} while (option != 0);
 
-
-	delete[]phonebook;
-
+	delete[] phonebook;
 	return 0;
 }
